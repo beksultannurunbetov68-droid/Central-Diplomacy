@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Central Diplomacy — Central Asia Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f3eee2;--s1:#fbf8f0;--s2:#ebe4d3;--line:#cdc4ae;--tx:#161616;--mu:#5d5748;--ac:#1c4a94;--ac2:#a3202c;--neg:#a3202c;--ink:#121212;--onac:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0e17;--s1:#101726;--s2:#172235;--line:#243350;--tx:#e8eefb;--mu:#8a98b3;--ac:#4da3ff;--ac2:#5fd4e8;--neg:#ff7a7a;--ink:#e8eefb;--onac:#04101f;color-scheme:dark}}
+:root[data-theme="light"]{--bg:#f3eee2;--s1:#fbf8f0;--s2:#ebe4d3;--line:#cdc4ae;--tx:#161616;--mu:#5d5748;--ac:#1c4a94;--ac2:#a3202c;--neg:#a3202c;--ink:#121212;--onac:#fff;color-scheme:light}
+:root[data-theme="dark"]{--bg:#0a0e17;--s1:#101726;--s2:#172235;--line:#243350;--tx:#e8eefb;--mu:#8a98b3;--ac:#4da3ff;--ac2:#5fd4e8;--neg:#ff7a7a;--ink:#e8eefb;--onac:#04101f;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--tx);font:15px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:14px;height:56px}
+.brand{font-weight:700;letter-spacing:-.02em;font-size:17px;color:var(--tx);text-decoration:none;white-space:nowrap}
+.brand b{color:var(--ac)}
+nav{display:flex;gap:2px;overflow-x:auto;flex:1;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{color:var(--mu);text-decoration:none;font-size:13px;padding:6px 10px;border-radius:6px;white-space:nowrap}
+nav a:hover{color:var(--tx);background:var(--s2)}
+.btn{background:var(--s2);border:1px solid var(--line);color:var(--tx);border-radius:7px;padding:5px 10px;font:500 12px 'JetBrains Mono',monospace;cursor:pointer}
+.btn:hover{border-color:var(--ac)}
+.btn.on{background:var(--ac);color:var(--onac);border-color:var(--ac)}
+.hero{padding:64px 0 36px}
+.eyebrow{font:500 12px 'JetBrains Mono',monospace;color:var(--ac);letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:clamp(34px,6.5vw,66px);line-height:1.05;letter-spacing:-.035em;margin:14px 0 14px;max-width:820px}
+h1 em{font-style:normal;color:var(--ac)}
+.lead{color:var(--mu);font-size:17px;max-width:600px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0}
+section{padding:44px 0;border-top:1px solid var(--line)}
+h2{font-size:26px;letter-spacing:-.02em;margin-bottom:6px}
+.sub{color:var(--mu);margin-bottom:22px;max-width:640px;font-size:14px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(2,1fr)}
+@media(min-width:760px){.kpis{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.1fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:18px}
+.kpi .l{color:var(--mu);font-size:12px}
+.kpi .v{font:600 28px 'JetBrains Mono',monospace;margin:4px 0;letter-spacing:-.03em}
+.kpi .s{color:var(--mu);font-size:11px}
+.up{color:var(--ac2)}.dn{color:var(--neg)}
+.map{width:100%;height:auto;background:var(--s2);border-radius:10px;touch-action:pan-y;cursor:grab}
+.map .sea{fill:color-mix(in srgb,var(--ac) 22%,var(--s2));stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.map .cty{stroke:var(--mu);stroke-width:1.2;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .25s}
+.map .cty:hover{stroke:var(--tx)}
+.map .cty.act{stroke:var(--ac);stroke-width:2.6}
+.map text{fill:var(--tx);font:600 11px 'JetBrains Mono',monospace;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:var(--s2);stroke-width:3px}
+.map text.v{font-weight:500;fill:var(--ac2)}
+.map text.c{font-size:8px;font-weight:400;text-anchor:start;fill:var(--mu)}
+.mapwrap{position:relative}.zb{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:5px}#tip{position:absolute;pointer-events:none;display:none;background:var(--s1);border:1px solid var(--ac);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.5;z-index:3;min-width:150px}
+.map .cty polygon{vector-effect:non-scaling-stroke}.map .nb{fill:color-mix(in srgb,var(--s2) 70%,var(--s1));stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}.map .riv{fill:none;stroke:color-mix(in srgb,var(--ac) 45%,var(--s2));stroke-width:1.4;vector-effect:non-scaling-stroke}.map text.nbl{font-size:10px;font-weight:400;fill:var(--mu);opacity:.55;letter-spacing:.2em;stroke:none}
+.maptools{display:flex;gap:8px;margin-top:10px;align-items:center}
+.maptools select{flex:1}
+.legend{display:flex;align-items:center;gap:8px;margin-top:8px;font:11px 'JetBrains Mono',monospace;color:var(--mu)}
+.legend i{flex:1;height:6px;border-radius:9px;background:linear-gradient(90deg,color-mix(in srgb,var(--ac) 18%,var(--s1)),var(--ac))}
+.chartbox{position:relative;height:250px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mu);font:500 11px 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+tr.row{cursor:pointer}tr.row:hover td{background:var(--s2)}
+tr.row.sel td{background:var(--s2)}tr.row.sel td:first-child{box-shadow:inset 3px 0 var(--ac)}
+td.n{font-family:'JetBrains Mono',monospace;text-align:right}th.n{text-align:right}
+.badge{font:500 10px 'JetBrains Mono',monospace;padding:2px 7px;border-radius:99px;border:1px solid var(--line);color:var(--mu);white-space:nowrap}
+.badge.ok{color:var(--ac2);border-color:color-mix(in srgb,var(--ac2) 40%,transparent)}
+.badge.wt{color:var(--ac);border-color:color-mix(in srgb,var(--ac) 40%,transparent)}
+.rank{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rank .bar{flex:1;height:6px;background:var(--s2);border-radius:9px;overflow:hidden}
+.rank .bar i{display:block;height:100%;background:var(--ac);border-radius:9px;transition:width .5s}
+.rank .num{width:20px;color:var(--mu);font:12px 'JetBrains Mono',monospace}
+.rank .val{width:84px;text-align:right;font:13px 'JetBrains Mono',monospace}
+.art{cursor:pointer;transition:.2s}.art:hover{border-color:var(--ac);transform:translateY(-2px)}
+.art .tag{color:var(--ac);font:500 11px 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em}
+.art h3{font-size:18px;line-height:1.3;margin:8px 0;letter-spacing:-.01em}
+.art p{color:var(--mu);font-size:14px}
+.art .m{margin-top:12px;color:var(--mu);font:11px 'JetBrains Mono',monospace}
+.trk{display:flex;flex-direction:column;gap:6px}
+.trk .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.trk h4{font-size:14px}.trk p{font-size:13px;color:var(--mu)}
+footer{border-top:1px solid var(--line);padding:36px 0 28px;color:var(--mu);font-size:13px}
+footer a{color:var(--ac)}
+.fgrid{display:grid;gap:22px;margin-bottom:24px}
+@media(min-width:760px){.fgrid{grid-template-columns:2fr 1fr 1fr}}
+footer h5{color:var(--tx);font:500 11px 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+footer button{background:none;border:0;color:var(--mu);cursor:pointer;font:inherit;display:block;padding:3px 0;text-align:left}
+footer button:hover{color:var(--tx)}
+#modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:18px}
+#modal.show{display:flex}
+#modal .box{background:var(--s1);border:1px solid var(--line);border-radius:14px;max-width:680px;width:100%;max-height:86vh;overflow:auto;padding:26px}
+#modal h3{font-size:24px;line-height:1.2;letter-spacing:-.02em;margin:8px 0 12px}
+#modal p{margin:10px 0;color:var(--tx)}
+#modal ul{margin:10px 0 10px 18px;color:var(--mu)}
+.note{color:var(--mu);font-size:11px;margin-top:10px}
+
+.tick{background:var(--s1);border-bottom:1px solid var(--line);font-size:11px}
+.tk{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:6px;padding-bottom:6px}
+#tkL{white-space:nowrap;overflow-x:auto;scrollbar-width:none;color:var(--mu)}
+#langs{display:flex;gap:3px;flex-shrink:0}
+.btn.sm{padding:2px 6px;font-size:11px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mu);margin-right:4px}
+.dot.live{background:var(--ac2);box-shadow:0 0 0 0 var(--ac2);animation:pl 2s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 7px transparent}}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.rank .nm{width:140px;flex-shrink:0}
+.two-sel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+select,input,textarea{width:100%;background:var(--s2);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:14px Inter,sans-serif}
+textarea{font:12px 'JetBrains Mono',monospace}
+td.mid{text-align:center;color:var(--mu);font-size:12px}
+td.win{color:var(--ac);font-weight:600}
+.hit{padding:10px 8px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}
+.hit:hover{background:var(--s2)}
+#qr{margin-top:10px}
+@media(max-width:560px){.rank .nm{width:96px;font-size:12px}.rank .val{width:64px}#sBtn{display:none}}
+
+/* ===== newspaper / magazine edition ===== */
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55}
+.btn,nav a,td,th,.badge,input,select,textarea,.kpi .l,.legend,#tip,.note,.rank,table{font-family:Inter,system-ui,sans-serif}
+.btn,.mono,.eyebrow,.badge{font-family:'JetBrains Mono',monospace}
+.tick{background:var(--ink);color:var(--bg);border:0}
+#tkL{color:var(--bg);opacity:.85}
+.tick .btn{background:transparent;color:var(--bg);border-color:color-mix(in srgb,var(--bg) 40%,transparent)}
+.tick .btn.on{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+.mast{text-align:center;padding-top:22px}
+.mk{font-size:10px;letter-spacing:.3em;color:var(--ac2);margin-bottom:4px}
+.mt{display:block;font:700 clamp(38px,9vw,92px)/1 'Newsreader',Georgia,serif;letter-spacing:-.025em;text-transform:uppercase;color:var(--tx);text-decoration:none;padding:4px 0 12px}
+.mrule{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:3px double var(--ink);padding:7px 0;font-size:12px;color:var(--mu);text-transform:capitalize}
+.mrule .mono{text-transform:none;font-size:11px}
+header{background:var(--bg);backdrop-filter:none;border-top:1px solid var(--ink);border-bottom:2px solid var(--ink)}
+.hd{height:46px}.hd .brand{display:none}
+nav{justify-content:center}
+nav a{text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:var(--tx);border-radius:0;padding:6px 12px}
+nav a:hover{background:transparent;color:var(--ac);text-decoration:underline}
+.hero{padding:34px 0 30px}
+h1{font:700 clamp(34px,6.2vw,64px)/1.04 'Newsreader',Georgia,serif;letter-spacing:-.02em;max-width:900px}
+h1 em{font-style:italic;font-weight:600;color:var(--ac)}
+.lead{font-size:20px;font-style:italic;color:var(--mu);max-width:680px;line-height:1.45}
+.eyebrow{color:var(--ac2);font-weight:500;letter-spacing:.18em}
+section{border-top:3px double var(--ink);padding:36px 0}
+h2{font:700 clamp(26px,4vw,38px)/1.1 'Newsreader',Georgia,serif;letter-spacing:-.015em}
+.card{border-radius:0;background:var(--s1);border:1px solid var(--line);border-top:2px solid var(--ink)}
+.kpi .v{font-family:'Newsreader',Georgia,serif;font-weight:700;font-size:32px}
+.map,.map text,.legend i{border-radius:0}
+.map{border-radius:0}
+.pills .btn,.btn{border-radius:0}
+.art{border-top:2px solid var(--ink)}
+.art:hover{transform:none;border-color:var(--ac)}
+.art h3{font:700 22px/1.2 'Newsreader',Georgia,serif;letter-spacing:-.01em}
+.art p{font-size:16px}
+.art .tag{color:var(--ac2);letter-spacing:.16em}
+.art.lead{grid-column:1/-1;border-top:4px solid var(--ink)}
+.art.lead h3{font-size:clamp(28px,4.4vw,44px);line-height:1.08;max-width:820px}
+.art.lead p{font-size:18px}
+@media(min-width:760px){.art.lead p{columns:2;column-gap:32px;column-rule:1px solid var(--line)}}
+.art.lead p::first-letter{float:left;font:700 3.6em/.8 'Newsreader',serif;padding:6px 8px 0 0;color:var(--ac)}
+#modal .box{border-radius:0;border-top:4px solid var(--ink);background:var(--bg);font-family:'Newsreader',Georgia,serif;max-width:760px}
+#modal h3{font:700 clamp(26px,5vw,38px)/1.1 'Newsreader',serif}
+#modal p{font-size:18px;line-height:1.6}
+#modal p.dc::first-letter{float:left;font:700 3.8em/.8 'Newsreader',serif;padding:6px 8px 0 0;color:var(--ac)}
+@media(min-width:760px){#modal .box p:not(.dc),#modal .box p.dc{text-align:justify;hyphens:auto}}
+#modal ul{font-style:italic;border-left:3px solid var(--ac2);padding-left:18px;list-style:none;margin-left:0}
+.trk h4{font:700 17px 'Newsreader',serif}
+.trk{border-top:2px solid var(--ink)}
+footer{background:var(--ink);color:color-mix(in srgb,var(--bg) 72%,var(--ink));border-top:0;margin-top:20px}
+footer .brand,footer h5,footer a{color:var(--bg)}
+footer button{color:color-mix(in srgb,var(--bg) 72%,var(--ink))}
+footer button:hover{color:var(--bg)}
+td.win{color:var(--ac)}
+</style>
+</head>
+<body>
+<div class="tick"><div class="wrap tk"><span id="tkL" class="mono"></span><span id="langs"></span></div></div>
+<div class="wrap mast"><div class="mk mono">BISHKEK · ASTANA · TASHKENT · DUSHANBE · ASHGABAT</div><a class="mt" href="#top">Central Diplomacy</a><div class="mrule"><span id="mdate"></span><span class="mono">Open Access · CC BY 4.0</span></div></div>
+<header><div class="wrap hd">
+  <a class="brand" href="#top">Central<b>Diplomacy</b></a>
+  <nav>
+    <a href="#atlas" data-i="0" data-k="0"></a><a href="#data" data-i="0" data-k="1"></a><a href="#rank" data-i="0" data-k="2"></a><a href="#trade" data-i="0" data-k="3"></a><a href="#research" data-i="0" data-k="4"></a><a href="#tracker" data-i="0" data-k="5"></a><a href="#compare" data-i="0" data-k="6"></a>
+  </nav>
+  <button class="btn" id="sBtn" onclick="openSearch()" aria-label="Search">⌕ ⌘K</button>
+  <button class="btn" id="themeBtn" aria-label="Theme">◐</button>
+</div></header>
+
+<div class="wrap hero" id="top">
+  <div class="eyebrow" data-i="2"></div>
+  <h1><span data-i="3" data-k="0"></span> <em data-i="3" data-k="1"></em></h1>
+  <p class="lead" data-i="4"></p>
+  <div class="pills" id="pills"></div>
+</div>
+
+<section id="atlas"><div class="wrap">
+  <h2 id="cName"></h2><p class="sub" id="cDesc"></p>
+  <div class="grid kpis" id="kpis" style="margin-bottom:14px"></div>
+  <div class="grid two">
+    <div class="card">
+      <div class="mapwrap"><svg class="map" id="map" viewBox="0 0 700 470"></svg><div id="tip"></div><div class="zb"><button class="btn" onclick="zoomBy(.7)">＋</button><button class="btn" onclick="zoomBy(1.4)">－</button><button class="btn" onclick="resetMap()">↺</button></div></div><div class="pills" id="aInd" style="margin:10px 0 0"></div><div class="legend"><span id="lgA"></span><i></i><span id="lgB"></span></div>
+    </div>
+    <div class="card"><div class="eyebrow" style="margin-bottom:8px">GDP, $B · 2022–2026</div><div class="chartbox"><canvas id="gdpChart"></canvas></div></div>
+  </div>
+</div></section>
+
+<section id="data"><div class="wrap">
+  <div class="row2"><h2 data-i="1" data-k="0"></h2><button class="btn" id="csvBtn" style="display:none" onclick="csv()"></button></div>
+  <div class="grid two" style="margin-top:18px">
+    <div class="card" style="padding:6px 12px"><table id="tbl"></table></div>
+    <div class="card"><div class="eyebrow" id="indTitle" style="margin-bottom:8px"></div><div class="chartbox"><canvas id="indChart"></canvas></div></div>
+  </div>
+</div></section>
+
+<section id="rank"><div class="wrap">
+  <h2 data-i="1" data-k="1" style="margin-bottom:16px"></h2>
+  <div class="pills" id="rankTabs" style="margin:0 0 16px"></div>
+  <div class="card" id="rankList"></div>
+</div></section>
+
+<section id="trade"><div class="wrap">
+  <h2 data-i="1" data-k="2" style="margin-bottom:16px"></h2>
+  <div class="grid three">
+    <div class="card"><div class="eyebrow" data-i="8" data-k="0" style="margin-bottom:8px"></div><div class="pills" id="c1chips" style="margin:0 0 8px"></div><div class="chartbox"><canvas id="c1"></canvas></div></div>
+    <div class="card"><div class="eyebrow" data-i="8" data-k="1" style="margin-bottom:8px"></div><div class="chartbox"><canvas id="c2"></canvas></div></div>
+    <div class="card"><div class="eyebrow" data-i="8" data-k="2" style="margin-bottom:8px"></div><div class="chartbox"><canvas id="c3"></canvas></div></div>
+  </div>
+</div></section>
+
+<section id="research"><div class="wrap">
+  <h2 data-i="1" data-k="3" style="margin-bottom:16px"></h2>
+  <div class="grid cards" id="arts"></div>
+</div></section>
+
+<section id="tracker"><div class="wrap">
+  <h2 data-i="1" data-k="4" style="margin-bottom:16px"></h2>
+  <div class="pills" id="trkTabs" style="margin:0 0 16px"></div>
+  <div class="grid cards" id="trkGrid"></div>
+</div></section>
+
+<section id="compare"><div class="wrap">
+  <h2 data-i="1" data-k="5" style="margin-bottom:16px"></h2>
+  <div class="card" id="cmp"></div>
+</div></section>
+
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div><div class="brand" style="margin-bottom:8px">Central<b>Diplomacy</b></div><span data-i="10"></span><br><br><span data-i="11" data-k="6"></span><br><a href="mailto:beksultannurunbetov68@gmail.com">beksultannurunbetov68@gmail.com</a></div>
+    <div><h5 data-i="11" data-k="4"></h5><button onclick="info(0)" data-i="11" data-k="0"></button><button onclick="info(1)" data-i="11" data-k="1"></button><button onclick="info(2)" data-i="11" data-k="2"></button></div>
+    <div><h5 data-i="11" data-k="3"></h5><button onclick="openArt('security')" data-i="13" data-k="0"></button><button onclick="openArt('water')" data-i="13" data-k="1"></button><button onclick="openArt('corridors')" data-i="13" data-k="2"></button><button onclick="openArt('c5')" data-i="13" data-k="3"></button></div>
+  </div>
+  <div class="mono" style="font-size:11px">© 2026 Central Diplomacy · CC BY 4.0 · Bishkek · Astana · Tashkent · Dushanbe · Ashgabat</div>
+</div></footer>
+
+<div id="modal" onclick="if(event.target===this)closeM()"><div class="box"><div id="mBody"></div><div style="text-align:right;margin-top:18px"><button class="btn" onclick="closeM()" data-i="9" data-k="0"></button></div></div></div>
+
+<script>
+var T={
+ru:["Атлас|Показатели|Рейтинги|Торговля|Исследования|Трекер|Сравнение","Экономический обзор|Рейтинги экономик|Торговля и коридоры|Последние исследования|Трекер саммитов и соглашений|Сравнение стран","Атлас Центральной Азии","Понимаем Центральную Азию.|Видим будущее.","Экономика, торговые коридоры, вода и дипломатия пяти государств региона — в данных, картах и аналитике.","ВВП 2026|ВВП на душу|Население|Внешняя торговля","ВВП, номинальный|ВВП на душу|Рост ВВП|Инфляция|Безработица|Внешняя торговля","Данные|Образец|Все","Внешние партнёры, $ млрд|Торговля внутри ЦА, $ млрд|Транзит ТМТМ, млн т","Закрыть ✕|Поиск по сайту…|Обновлено|Скачать CSV|Ничего не найдено|Сохранить|Читать →|Данные синхронизируются автоматически","Независимое открытое издание о международных отношениях, безопасности, водной дипломатии и геоэкономике Центральной Азии.","О проекте|Методология|Контакты|Рубрики|Разделы|Админ-панель|Сотрудничество, статьи и поправки:","Казахстан,Узбекистан,Кыргызстан,Таджикистан,Туркменистан","Безопасность и границы|Вода и ресурсы|Транзит и коридоры|Интеграция C5+1","Подписано|Ратифицировано|В переговорах|Запланировано|Подготовка"],
+ky:["Атлас|Көрсөткүчтөр|Рейтингдер|Соода|Изилдөөлөр|Трекер|Салыштыруу","Экономикалык серептөө|Экономикалар рейтинги|Соода жана коридорлор|Акыркы изилдөөлөр|Саммиттер жана макулдашуулар трекери|Өлкөлөрдү салыштыруу","Борбордук Азия атласы","Борбордук Азияны түшүнөбүз.|Келечекти көрөбүз.","Аймактагы беш мамлекеттин экономикасы, соода коридорлору, суусу жана дипломатиясы — маалыматтарда, карталарда жана талдоодо.","ИДП 2026|Жан башына ИДП|Калк|Тышкы соода","ИДП, номиналдык|Жан башына ИДП|ИДП өсүшү|Инфляция|Жумушсуздук|Тышкы соода","Маалымат|Үлгү|Баары","Тышкы өнөктөштөр, $ млрд|БА ичиндеги соода, $ млрд|ТМТМ транзити, млн т","Жабуу ✕|Сайттан издөө…|Жаңыртылды|CSV жүктөө|Эч нерсе табылган жок|Сактоо|Окуу →|Маалымат автоматтык түрдө синхрондолот","Борбордук Азиянын эл аралык мамилелери, коопсуздугу жана геоэкономикасы боюнча көз карандысыз ачык басылма.","Долбоор жөнүндө|Методология|Байланыш|Рубрикалар|Бөлүмдөр|Админ-панель|Кызматташуу, макалалар жана оңдоолор:","Казакстан,Өзбекстан,Кыргызстан,Тажикстан,Түркмөнстан","Коопсуздук жана чек ара|Суу жана ресурстар|Транзит жана коридорлор|C5+1 интеграциясы","Кол коюлду|Ратификацияланды|Сүйлөшүүдө|Пландалган|Даярдалууда"],
+kz:["Атлас|Көрсеткіштер|Рейтингтер|Сауда|Зерттеулер|Трекер|Салыстыру","Экономикалық шолу|Экономикалар рейтингі|Сауда және дәліздер|Соңғы зерттеулер|Саммиттер мен келісімдер трекері|Елдерді салыстыру","Орталық Азия атласы","Орталық Азияны түсінеміз.|Болашақты көреміз.","Өңірдегі бес мемлекеттің экономикасы, сауда дәліздері, суы және дипломатиясы — деректерде, карталарда және талдауда.","ЖІӨ 2026|Жан басына ЖІӨ|Халық|Сыртқы сауда","ЖІӨ, номиналды|Жан басына ЖІӨ|ЖІӨ өсімі|Инфляция|Жұмыссыздық|Сыртқы сауда","Дерек|Үлгі|Барлығы","Сыртқы серіктестер, $ млрд|ОА ішіндегі сауда, $ млрд|ТХКБ транзиті, млн т","Жабу ✕|Сайттан іздеу…|Жаңартылды|CSV жүктеу|Ештеңе табылмады|Сақтау|Оқу →|Деректер автоматты түрде синхрондалады","Орталық Азияның халықаралық қатынастары, қауіпсіздігі және геоэкономикасы туралы тәуелсіз ашық басылым.","Жоба туралы|Әдіснама|Байланыс|Айдарлар|Бөлімдер|Админ-панель|Ынтымақтастық, мақалалар және түзетулер:","Қазақстан,Өзбекстан,Қырғызстан,Тәжікстан,Түрікменстан","Қауіпсіздік және шекара|Су және ресурстар|Транзит және дәліздер|C5+1 интеграциясы","Қол қойылды|Ратификацияланды|Келіссөзде|Жоспарланған|Дайындалуда"],
+uz:["Atlas|Koʻrsatkichlar|Reytinglar|Savdo|Tadqiqotlar|Treker|Taqqoslash","Iqtisodiy sharh|Iqtisodiyotlar reytingi|Savdo va yoʻlaklar|Soʻnggi tadqiqotlar|Sammitlar va kelishuvlar trekeri|Davlatlarni taqqoslash","Markaziy Osiyo atlasi","Markaziy Osiyoni tushunamiz.|Kelajakni koʻramiz.","Mintaqadagi beshta davlatning iqtisodiyoti, savdo yoʻlaklari, suvi va diplomatiyasi — maʼlumotlar, xaritalar va tahlilda.","YAIM 2026|Aholi jon boshiga YAIM|Aholi|Tashqi savdo","YAIM, nominal|Jon boshiga YAIM|YAIM oʻsishi|Inflyatsiya|Ishsizlik|Tashqi savdo","Maʼlumot|Namuna|Barchasi","Tashqi hamkorlar, $ mlrd|MO ichidagi savdo, $ mlrd|TMTM tranziti, mln t","Yopish ✕|Sayt boʻyicha qidiruv…|Yangilandi|CSV yuklab olish|Hech narsa topilmadi|Saqlash|Oʻqish →|Maʼlumotlar avtomatik sinxronlanadi","Markaziy Osiyoning xalqaro munosabatlari, xavfsizligi va geoiqtisodiyoti boʻyicha mustaqil ochiq nashr.","Loyiha haqida|Metodologiya|Aloqa|Rubrikalar|Boʻlimlar|Admin-panel|Hamkorlik, maqolalar va tuzatishlar:","Qozogʻiston,Oʻzbekiston,Qirgʻiziston,Tojikiston,Turkmaniston","Xavfsizlik va chegaralar|Suv va resurslar|Tranzit va yoʻlaklar|C5+1 integratsiyasi","Imzolandi|Ratifikatsiya qilindi|Muzokarada|Rejalashtirilgan|Tayyorlanmoqda"],
+en:["Atlas|Indicators|Rankings|Trade|Research|Tracker|Compare","Economic overview|Economic rankings|Trade and corridors|Latest research|Summit & treaty tracker|Country comparison","An atlas of Central Asia","Understanding Central Asia.|Visualizing the future.","Economy, trade corridors, water and diplomacy of the region’s five states — in data, maps and analysis.","GDP 2026|GDP per capita|Population|External trade","GDP, nominal|GDP per capita|GDP growth|Inflation|Unemployment|External trade","Data|Sample|All","External partners, $B|Intra-CA trade, $B|Middle Corridor transit, Mt","Close ✕|Search the site…|Updated|Download CSV|Nothing found|Save|Read →|Data syncs automatically","Independent open-access journal on international relations, security, water diplomacy and geoeconomics of Central Asia.","About|Methodology|Contacts|Rubrics|Sections|Admin panel|Collaboration, papers & corrections:","Kazakhstan,Uzbekistan,Kyrgyzstan,Tajikistan,Turkmenistan","Security & borders|Water & resources|Transit & corridors|C5+1 integration","Signed|Ratified|In talks|Scheduled|Preparing"],
+tk:["Atlas|Görkezijiler|Reýtingler|Söwda|Barlaglar|Treker|Deňeşdirme","Ykdysady syn|Ykdysadyýet reýtingi|Söwda we geçelgeler|Soňky barlaglar|Sammitler we ylalaşyklar trekeri|Ýurtlary deňeşdirmek","Merkezi Aziýa atlasy","Merkezi Aziýany düşünýäris.|Geljegi görýäris.","Sebitdäki bäş döwletiň ykdysadyýeti, söwda geçelgeleri, suwy we diplomatiýasy — maglumatlarda, kartalarda we seljermede.","JIÖ 2026|Jan başyna JIÖ|Ilat|Daşary söwda","JIÖ, nominal|Jan başyna JIÖ|JIÖ ösüşi|Inflýasiýa|Işsizlik|Daşary söwda","Maglumat|Nusga|Ählisi","Daşarky hyzmatdaşlar, $ mlrd|MA içindäki söwda, $ mlrd|TMTM üstaşyry, mln t","Ýapmak ✕|Sahypadan gözleg…|Täzelendi|CSV ýükle|Hiç zat tapylmady|Saklamak|Okamak →|Maglumatlar awtomatiki sinhronlaşýar","Merkezi Aziýanyň halkara gatnaşyklary, howpsuzlygy we geoykdysadyýeti boýunça garaşsyz açyk neşir.","Taslama hakynda|Usulyýet|Aragatnaşyk|Rubrikalar|Bölümler|Admin-paneli|Hyzmatdaşlyk, makalalar we düzedişler:","Gazagystan,Özbegistan,Gyrgyzystan,Täjigistan,Türkmenistan","Howpsuzlyk we serhet|Suw we serişdeler|Üstaşyr we geçelgeler|C5+1 integrasiýasy","Gol çekildi|Tassyklandy|Gepleşikde|Meýilleşdirilen|Taýýarlanylýar"]
+};
+var LG=['ru','ky','kz','uz','en','tk'],LOC={ru:'ru-RU',ky:'ky-KG',kz:'kk-KZ',uz:'uz-UZ',en:'en-US',tk:'tk-TM'},K=['KZ','UZ','KG','TJ','TM'],AK=['security','water','corridors','c5'];
+var lang='ru',cur='KZ',ind=0,rk=0,fmt='ALL',cl_='KZ',cr_='UZ',ch={},R={},live=false,dl=null,adm=false;
+try{var sv=localStorage.getItem('cdlang');if(sv&&T[sv])lang=sv}catch(x){}
+var D={updated:'2026-11-15',
+C:{KZ:{f:'🇰🇿',cap:'Астана',gdp:287.5,g:5.6,pop:20.6,tr:139.4,inf:11.4,un:4.8,s:[225,261,274,281,287.5],d:{ru:'Крупнейшая экономика ЦА, ключевой узел Срединного коридора и лидер по ПИИ и переработке критических минералов.',en:'Central Asia’s largest economy, anchor of the Middle Corridor and regional leader in FDI and critical minerals.'}},
+UZ:{f:'🇺🇿',cap:'Ташкент',gdp:114.6,g:6.5,pop:37.0,tr:62.8,inf:9.1,un:5.0,s:[81,90,99,107,114.6],d:{ru:'Демографическое и промышленное ядро региона, драйвер внутрирегиональной кооперации и южных коридоров.',en:'Demographic and industrial core of the region, driving intra-regional manufacturing and southern rail links.'}},
+KG:{f:'🇰🇬',cap:'Бишкек',gdp:16.8,g:8.2,pop:7.2,tr:15.2,inf:8.2,un:3.5,s:[11.5,13.9,15.1,15.9,16.8],d:{ru:'Гидроэнергетический узел верховьев Сырдарьи, участник Камбаратинской ГЭС-1 и железной дороги Китай — Кыргызстан — Узбекистан.',en:'Upstream hydro anchor on the Syr Darya, co-developing Kambarata-1 HPP and the China–Kyrgyzstan–Uzbekistan railway.'}},
+TJ:{f:'🇹🇯',cap:'Душанбе',gdp:14.5,g:7.8,pop:10.5,tr:8.9,inf:4.9,un:6.5,s:[10.4,11.8,12.7,13.6,14.5],d:{ru:'Центр водно-климатической дипломатии ООН и экспортёр гидроэлектроэнергии по проекту CASA-1000.',en:'Hub of UN water-climate diplomacy and clean hydropower exporter via CASA-1000.'}},
+TM:{f:'🇹🇲',cap:'Ашхабад',gdp:68.2,g:6.3,pop:7.5,tr:21.5,inf:5.5,un:4.0,s:[56,59,62,65,68.2],d:{ru:'Нейтральное государство с крупнейшими запасами газа; развивает порт Туркменбаши и газовые свопы.',en:'Neutral state with vast gas reserves, expanding Turkmenbashi port and gas swaps.'}}},
+P:{l:['2018','2020','2022','2024','2026'],cn:[41.7,38.6,70.2,89.4,94.8],eu:[29.4,24.1,43.8,49.6,54.2],ru:[27.8,26.2,41.5,44.9,44.1]},
+I:{l:['2018','2020','2022','2024','2026'],v:[5.6,6.4,8.9,10.0,11.4]},
+M:{l:['2021','2022','2023','2024','2025','2026'],v:[.58,1.48,2.76,3.35,4.15,4.82]},
+TR:[{f:'C5+1',d:'28.10.2026',s:0,ru:['Самарканд · ЦА — ЕС','Пакт по критическим минералам и финансированию Срединного коридора (€12 млрд)'],en:['Samarkand · CA — EU','Critical Raw Materials & Middle Corridor Infrastructure Pact (€12B)']},
+{f:'OTS',d:'06.11.2026',s:1,ru:['Бишкек · Саммит ОТГ','Капитализация Тюркского инвестиционного фонда и запуск цифрового e-TIR'],en:['Bishkek · OTS Summit','Turkic Investment Fund capitalization & digital e-TIR protocol']},
+{f:'BILAT',d:'14.11.2026',s:0,ru:['Бишкек — Ташкент — Пекин','Инвестиционное соглашение по железной дороге Китай — КР — РУз'],en:['Bishkek — Tashkent — Beijing','Trilateral investment pact for the China–Kyrgyzstan–Uzbekistan railway']},
+{f:'SCO',d:'04.12.2026',s:2,ru:['Астана · Совет глав правительств ШОС','Дорожная карта расчётов в нацвалютах и пограничный мониторинг'],en:['Astana · SCO Heads of Government','Local-currency settlement roadmap & border monitoring']},
+{f:'EAEU',d:'18.12.2026',s:3,ru:['Астана · Высший экономический совет','Снятие барьеров на транзит сельхозпродукции и единый цифровой рынок'],en:['Astana · Supreme Economic Council','Removal of agricultural transit barriers & digital market integration']},
+{f:'C5+1',d:'22.01.2027',s:4,ru:['Доха · ЦА — ССАГПЗ','Совместные суверенные фонды для зелёной энергетики и ирригации'],en:['Doha · CA — GCC','Joint sovereign funds for green energy & irrigation']}],
+A:{c5:{m:'15.11.2026 · 9 min',au:'Айдар Касымов',ru:{t:'Интеграция C5+1: как Центральная Азия превращает многовекторность в единую переговорную силу',l:'Пять государств синхронизируют торговые коридоры, тарифы и климатическую дипломатию, выступая единым субъектом в диалоге с Китаем, ЕС, США, Россией и странами Залива.',b:['Внутрирегиональная торговля выросла до $11.4 млрд (+14.2%).','Формат C5+1 охватывает уже 7 глобальных центров силы.','Совместные фонды развития снижают зависимость от внешнего кредитования.'],p:['Три десятилетия регион рассматривали сквозь призму «новой Большой игры». К 2026 году эта модель устарела: регулярные консультативные встречи глав государств превратили его в самостоятельный геоэкономический блок.','Выступая консолидированно, пять столиц добиваются локализации переработки критических минералов и инвестиций в зелёную энергетику.']},en:{t:'C5+1 Integration: How Central Asia Turns Multi-Vector Diplomacy into Collective Bargaining Power',l:'The five republics are synchronizing corridors, tariffs and climate diplomacy to negotiate as one bloc with China, the EU, the US, Russia and the Gulf.',b:['Intra-regional trade reached $11.4B (+14.2% YoY).','C5+1 now spans seven major global power centers.','Joint development funds bolster financial autonomy.'],p:['For three decades the region was seen as an arena of great-power rivalry. By 2026, regular consultative meetings of heads of state have made it a coordinated geoeconomic actor.','Negotiating together, the capitals secure local mineral refining and direct investment into renewable grids.']}},
+security:{m:'12.11.2026 · 7 min',au:'Бектур Асанов',ru:{t:'Безопасность и границы: Ферганский прецедент и новая архитектура стабильности',l:'Завершение делимитации границ между Кыргызстаном, Таджикистаном и Узбекистаном устранило главный внутренний риск безопасности региона.',b:['Оформление границ сняло десятилетия территориальных споров.','Новые КПП и ID-карты стимулируют приграничную торговлю.','ШОС, ОДКБ и ОТГ обеспечивают многослойную защиту рубежей.'],p:['Ферганская долина долго считалась самым уязвимым узлом региона. Соглашения о делимитации и демаркации изменили архитектуру безопасности.','Устранение внутренних трений лишило внешних игроков рычага давления.']},en:{t:'Security & Borders: The Fergana Precedent and Central Asia’s New Stability Architecture',l:'Final border delimitation among Kyrgyzstan, Tajikistan and Uzbekistan has removed the region’s foremost internal security vulnerability.',b:['Demarcation resolved decades of territorial friction.','New checkpoints and ID-card transit boost cross-border SME trade.','Overlapping SCO, CSTO and OTS frameworks reinforce stability.'],p:['Long the region’s most sensitive flashpoint, the Fergana Valley has been transformed by sequential border treaties.','Ending internal disputes removed a primary lever of external manipulation.']}},
+water:{m:'09.11.2026 · 8 min',au:'Малика Рахимова',ru:{t:'Вода и ресурсы: как Камбаратинская ГЭС-1 меняет баланс в регионе',l:'Консорциум Кыргызстана, Казахстана и Узбекистана переводит управление стоком Сырдарьи и Амударьи в прагматичное коммерческое русло.',b:['Софинансирование Камбаратинской ГЭС-1 (1860 МВт) гарантирует летний сток.','Модернизация ирригации сокращает потери воды на 25–30%.','Диалог с Афганистаном по каналу Кош-Тепа снижает риски.'],p:['Противоречие между зимней генерацией в верховьях и летней ирригацией в низовьях десятилетиями оставалось главным вызовом региона.','Совместное инвестирование превращает воду из предмета торга с нулевой суммой в общий актив.']},en:{t:'Water & Resources: How Kambarata-1 HPP Reshapes the Regional Balance',l:'A consortium of Kyrgyzstan, Kazakhstan and Uzbekistan turns Syr Darya and Amu Darya governance into a bankable joint enterprise.',b:['Co-financing Kambarata-1 HPP (1,860 MW) secures summer flows.','Canal modernization cuts losses by 25–30%.','Engagement with Kabul over the Qosh Tepa Canal mitigates risk.'],p:['Balancing upstream winter hydropower with downstream summer irrigation has long been the central resource dilemma.','Joint equity turns transboundary water into a shared economic asset.']}},
+corridors:{m:'05.11.2026 · 8 min',au:'Тимур Сулейменов',ru:{t:'Транзит и коридоры: Срединный маршрут и железная дорога Китай — Кыргызстан — Узбекистан',l:'Синхронизация каспийских портов и магистраль CKU превращают Центральную Азию в главный сухопутный хаб Евразии.',b:['Перевозки по ТМТМ выросли в 8 раз с 2021 года — до 4.82 млн т.','Сквозной тариф сократил доставку контейнеров из КНР в ЕС до 14 дней.','CKU открывает выход к портам Персидского залива.'],p:['Перестройка цепочек поставок вывела транспортные коридоры региона на первый план геоэкономики.','Цифровая таможня (e-TIR) и расширение портов Актау и Туркменбаши закрепляют транзитный суверенитет.']},en:{t:'Transit & Corridors: The Middle Corridor and the China–Kyrgyzstan–Uzbekistan Railway',l:'Synchronizing Caspian ports with the CKU rail link positions Central Asia as Eurasia’s premier overland hub.',b:['TMTM freight rose eightfold since 2021 to 4.82 Mt.','Through-tariffs cut China–Europe container transit to 14 days.','CKU unlocks southern access to Persian Gulf ports.'],p:['Supply-chain realignment has put the region’s corridors at the front of Eurasian geoeconomics.','Digital e-TIR customs and port expansion at Aktau and Turkmenbashi cement transit leverage.']}}}};
+function mg(a,b){if(Array.isArray(b)||b===null||typeof b!=='object')return b;var o=Object.assign({},a);for(var k in b)o[k]=mg(a?a[k]:undefined,b[k]);return o}
+function E(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function $(i){return document.getElementById(i)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function g(i,k){var s=T[lang][i];return k===undefined?s:s.split('|')[k]}
+function cn(c){return g(12).split(',')[K.indexOf(c)]}
+function cl(){return lang==='en'||lang==='uz'||lang==='tk'?'en':'ru'}
+var B={},mi=0,PAL=['#4da3ff','#7dd3fc','#818cf8','#2dd4bf','#c4b5fd'];
+function DATA(){return mg(mg(D,B),R)}
+function isS(i){return !B.src&&SAMPLE.indexOf(i)>=0}
+function rkOf(i,d){return K.slice().sort(function(a,b){return IN[i][2]?IN[i][0](d.C[b])-IN[i][0](d.C[a]):IN[i][0](d.C[a])-IN[i][0](d.C[b])}).indexOf(cur)+1}
+var IN=[[function(c){return c.gdp},function(v){return '$'+v.toFixed(1)+'B'},1],[function(c){return c.gdp*1000/c.pop},function(v){return '$'+Math.round(v).toLocaleString('en')},1],[function(c){return c.g},function(v){return v.toFixed(1)+'%'},1],[function(c){return c.inf},function(v){return v.toFixed(1)+'%'},0],[function(c){return c.un},function(v){return v.toFixed(1)+'%'},0],[function(c){return c.tr},function(v){return '$'+v.toFixed(1)+'B'},1]];
+var SAMPLE=[1,3,4],BC=['ok','ok','wt','','wt'];
+function mk(id,cfg){if(ch[id])ch[id].destroy();Chart.defaults.font.family="'JetBrains Mono',monospace";Chart.defaults.font.size=10;Chart.defaults.color=css('--mu');cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},elements:{point:{hitRadius:18,hoverRadius:6}},plugins:{legend:{display:false}},scales:{y:{grid:{color:css('--line')}},x:{grid:{display:false}}}},cfg.options||{});ch[id]=new Chart($(id).getContext('2d'),cfg)}
+function fmtD(s){try{return new Date(s).toLocaleDateString(LOC[lang],{day:'numeric',month:'short',year:'numeric'})}catch(x){return s}}
+function render(){
+ var d=DATA(),c=d.C[cur],L=cl();
+ document.documentElement.lang=lang==='kz'?'kk':lang;
+ document.querySelectorAll('[data-i]').forEach(function(x){var k=x.dataset.k;x.textContent=k===undefined?g(+x.dataset.i):g(+x.dataset.i,+k)});
+ $('csvBtn').textContent=g(9,3);$('csvBtn').style.display='';
+ var sg=0,gw=0,st=0;K.forEach(function(k){var z=d.C[k];sg+=z.gdp;gw+=z.g*z.gdp;st+=z.tr});
+ $('tkL').innerHTML='<span class="dot'+(live?' live':'')+'"></span> '+E(g(5,0))+' CA: $'+sg.toFixed(1)+'B (+'+(gw/sg).toFixed(1)+'%) · '+E(g(5,3))+': $'+st.toFixed(1)+'B · TMTM: '+d.M.v[d.M.v.length-1]+'Mt · '+E(g(9,2))+' '+E(fmtD(d.updated));
+ $('tkL').title=g(9,7);
+ $('mdate').textContent=new Date().toLocaleDateString(LOC[lang],{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ $('langs').innerHTML=LG.map(function(l){return '<button class="btn sm'+(l===lang?' on':'')+'" onclick="setLang(\''+l+'\')">'+l.toUpperCase()+'</button>'}).join('');
+ $('pills').innerHTML=K.map(function(k){return '<button class="btn'+(k===cur?' on':'')+'" onclick="pick(\''+k+'\')">'+d.C[k].f+' '+E(cn(k))+'</button>'}).join('');
+ drawMap(d);
+ $('cName').textContent=c.f+' '+cn(cur)+' · '+c.cap;$('cDesc').textContent=c.d[L]||c.d.ru;
+ var tp=K.reduce(function(a,k){return a+d.C[k].pop},0),sub=['▲ '+c.g+'%','CA Ø $'+Math.round(sg*1000/tp).toLocaleString('en'),(c.pop/tp*100).toFixed(0)+'% CA',(c.tr/c.gdp*100).toFixed(0)+'% GDP'],kv=[IN[0][1](c.gdp),IN[1][1](IN[1][0](c)),c.pop+'M',IN[5][1](c.tr)];
+ $('kpis').innerHTML=kv.map(function(v,i){return '<div class="card kpi"><div class="l">'+E(g(5,i))+'</div><div class="v">'+E(v)+'</div><div class="s '+(i?'':'up')+'">'+sub[i]+'</div></div>'}).join('');
+ $('tbl').innerHTML=IN.map(function(f,i){var gr=((c.s[4]/c.s[3]-1)*100).toFixed(1);return '<tr class="row'+(i===ind?' sel':'')+'" onclick="ind='+i+';render()"><td>'+E(g(6,i))+'</td><td><span class="badge '+(isS(i)?'wt':'ok')+'">'+g(7,isS(i)?1:0)+'</span></td><td class="n">'+f[1](f[0](c))+'</td><td class="n">#'+rkOf(i,d)+'</td></tr>'}).join('');
+ $('indTitle').textContent=g(6,ind);
+ mk('gdpChart',{type:'line',data:{labels:c.y||['2022','2023','2024','2025','2026'],datasets:[{data:c.s,borderColor:css('--ac'),backgroundColor:css('--ac')+'22',fill:true,tension:.3,borderWidth:2.5,pointRadius:3}]}});
+ indChartDraw(d,c);
+ $('rankTabs').innerHTML=IN.map(function(f,i){return '<button class="btn'+(i===rk?' on':'')+'" onclick="rk='+i+';render()">'+E(g(6,i))+'</button>'}).join('');
+ var ar=K.map(function(k){return[k,IN[rk][0](d.C[k])]}).sort(function(a,b){return IN[rk][2]?b[1]-a[1]:a[1]-b[1]}),mx=Math.max.apply(null,ar.map(function(a){return a[1]}));
+ $('rankList').innerHTML=ar.map(function(a,i){return '<div class="rank"><span class="num">'+(i+1)+'</span><span class="nm">'+d.C[a[0]].f+' '+E(cn(a[0]))+'</span><span class="bar"><i style="width:'+(a[1]/mx*100)+'%"></i></span><span class="val">'+IN[rk][1](a[1])+'</span></div>'}).join('');
+ mk('c1',{type:'line',data:{labels:d.P.l,datasets:[{label:'China',hidden:!!hid1.cn,data:d.P.cn,borderColor:css('--ac'),tension:.25,borderWidth:2},{label:'EU',hidden:!!hid1.eu,data:d.P.eu,borderColor:css('--ac2'),tension:.25,borderWidth:2},{label:'Russia',hidden:!!hid1.ru,data:d.P.ru,borderColor:css('--mu'),borderDash:[4,3],tension:.25,borderWidth:2}]},options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:8}}}}});
+ $('c1chips').innerHTML=[['cn','China'],['eu','EU'],['ru','Russia']].map(function(x){return '<button class="btn sm'+(hid1[x[0]]?'':' on')+'" onclick="hid1.'+x[0]+'=hid1.'+x[0]+'?0:1;render()">'+x[1]+'</button>'}).join('');
+ mk('c2',{type:'bar',data:{labels:d.I.l,datasets:[{data:d.I.v,backgroundColor:css('--ac2'),borderRadius:4}]}});
+ mk('c3',{type:'bar',data:{labels:d.M.l,datasets:[{data:d.M.v,backgroundColor:css('--ac'),borderRadius:4}]}});
+ $('arts').innerHTML=AK.map(function(k,i){var a=d.A[k],x=a[L]||a.ru;return '<article class="card art'+(i===0?' lead':'')+'" onclick="openArt(\''+k+'\')"><div class="tag">'+E(g(13,i))+'</div><h3>'+E(x.t)+'</h3><p>'+E(x.l)+'</p><div class="m">'+E(a.au)+' · '+E(a.m)+'</div></article>'}).join('');
+ var FM=['ALL','C5+1','SCO','OTS','EAEU','BILAT'];
+ $('trkTabs').innerHTML=FM.map(function(f){return '<button class="btn'+(f===fmt?' on':'')+'" onclick="fmt=\''+f+'\';render()">'+(f==='ALL'?g(7,2):f)+'</button>'}).join('');
+ $('trkGrid').innerHTML=d.TR.filter(function(r){return fmt==='ALL'||r.f===fmt}).map(function(r){var v=r[L]||r.ru;return '<div class="card trk"><div class="top"><span class="mono" style="font-size:12px"><b>'+E(r.f)+'</b> · '+E(r.d)+'</span><span class="badge '+BC[r.s]+'">'+E(g(14,r.s))+'</span></div><h4>'+E(v[0])+'</h4><p>'+E(v[1])+'</p></div>'}).join('');
+ var op=K.map(function(k){return function(s){return '<option value="'+k+'"'+(k===s?' selected':'')+'>'+d.C[k].f+' '+E(cn(k))+'</option>'}});
+ var A_=d.C[cl_],B_=d.C[cr_];
+ $('cmp').innerHTML='<div class="two-sel"><select id="sL" onchange="cl_=this.value;render()">'+K.map(function(k){return op[K.indexOf(k)](cl_)}).join('')+'</select><select id="sR" onchange="cr_=this.value;render()">'+K.map(function(k){return op[K.indexOf(k)](cr_)}).join('')+'</select></div><table>'+IN.map(function(f,i){var a=f[0](A_),b=f[0](B_),w=a===b?0:(a>b)===!!f[2]?1:2;return '<tr><td class="n'+(w===1?' win':'')+'">'+f[1](a)+'</td><td class="mid">'+E(g(6,i))+'</td><td class="n'+(w===2?' win':'')+'" style="text-align:left">'+f[1](b)+'</td></tr>'}).join('')+'</table>';
+ $('sBtn').title=g(9,1);
+}
+function indChartDraw(d,c){var ys=c.y||['2022','2023','2024','2025','2026'];
+ if(ind<2){var f=ind?function(k){return d.C[k].s.map(function(v){return +(v*1000/d.C[k].pop).toFixed(0)})}:function(k){return d.C[k].s};
+  mk('indChart',{type:'line',data:{labels:ys,datasets:K.map(function(k,i){return{label:k,data:f(k),borderColor:PAL[i],backgroundColor:PAL[i],borderWidth:k===cur?3.5:1.5,tension:.3,pointRadius:k===cur?3:0}})},options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:8}}},scales:{y:{type:'logarithmic',grid:{color:css('--line')}},x:{grid:{display:false}}}}})}
+ else mk('indChart',{type:'bar',data:{labels:K,datasets:[{data:K.map(function(k){return +IN[ind][0](d.C[k]).toFixed(1)}),backgroundColor:K.map(function(k){return k===cur?css('--ac'):css('--line')}),borderRadius:4}]}})}
+var GEO={
+KZ:[[46.5,48.4],[47.2,50],[50.5,51.6],[54,51.1],[56.5,51],[59.5,50.6],[61.4,51.3],[61.2,53],[65,54.7],[69,55.4],[73.5,54],[76.5,54.1],[77.9,53.3],[80,50.9],[83,51],[87.3,49.1],[85.5,47],[83,47.2],[82.5,45.3],[80.4,44.5],[80.1,42.9],[80.2,42.2],[76,42.9],[74,43.2],[70.97,42.25],[69.6,41.9],[68.2,41.4],[66.2,42.2],[64,43],[62,43.7],[61,44.3],[58.6,45.5],[56,45],[56,41.3],[54.7,42.2],[53.1,42.2],[51.3,43.2],[50.2,44.5],[51.3,45.3],[49,46.4],[47.2,45.7]],
+UZ:[[70.97,42.25],[69.6,41.9],[68.2,41.4],[66.2,42.2],[64,43],[62,43.7],[61,44.3],[58.6,45.5],[56,45],[56,41.3],[58.5,42],[60,41.4],[61.3,41.2],[62.6,39.9],[64.4,38.9],[65.6,37.6],[66.5,37.35],[67.8,37.2],[67.8,38.4],[67.7,39.6],[68.3,39.5],[69.3,40],[70.5,40.2],[72.4,40.3],[73,40.9],[71.4,41.2]],
+KG:[[70.97,42.25],[74,43.2],[76,42.9],[80.2,42.2],[78.5,41.5],[75.7,40.3],[73.7,39.4],[72.6,39.4],[71.6,39.9],[70.5,40.2],[72.4,40.3],[73,40.9],[71.4,41.2]],
+TJ:[[70.5,40.2],[71.6,39.9],[72.6,39.4],[73.7,39.4],[73.8,38.9],[75.1,38.4],[74.9,37.3],[72.5,37.2],[71.5,37.9],[70.2,38],[68.9,37.2],[67.8,37.2],[67.8,38.4],[67.7,39.6],[68.3,39.5],[69.3,40]],
+TM:[[56,41.3],[58.5,42],[60,41.4],[61.3,41.2],[62.6,39.9],[64.4,38.9],[65.6,37.6],[66.5,37.35],[65,37.2],[64,36.2],[62.5,35.3],[61.25,35.6],[60.5,36.6],[59.3,37.5],[57.5,38.2],[56,38.1],[53.9,37.3],[53,38.5],[52.8,39.5],[53.1,40.8],[52.9,41.8],[53.1,42.2],[54.7,42.2]]};
+var SEA=[[49,46.4],[51.3,45.3],[50.2,44.5],[51.3,43.2],[53.1,42.2],[52.9,41.8],[53.1,40.8],[52.8,39.5],[53,38.5],[53.9,37.3],[51,36.7],[49,37.5],[49,40],[50.2,40.4],[49.5,42],[47.5,43],[47,44.5],[47.5,45.6]];
+var LBL={KZ:[66,49],UZ:[63.2,41.7],KG:[75.3,41.6],TJ:[71.2,38.6],TM:[58.5,39.4]};
+var CITY=[['Astana',71.43,51.13,1],['Tashkent',69.28,41.3,1],['Bishkek',74.6,42.87,1],['Dushanbe',68.78,38.56,1],['Ashgabat',58.38,37.95,1],['Almaty',76.95,43.24,0],['Samarkand',66.96,39.65,0],['Aktau',51.2,43.65,0],['Turkmenbashi',53,40,0]];
+function pj(p){return[+((p[0]-45)*.731*22).toFixed(1),+((56.5-p[1])*22).toFixed(1)]}
+function pts(a){return a.map(function(p){return pj(p).join(',')}).join(' ')}
+var vb=[0,0,700,470],vbT=null;
+function setVB(v){vb=v;$('map').setAttribute('viewBox',v.join(' '))}
+function animVB(t){var f=vb.slice(),t0=performance.now();if(vbT)cancelAnimationFrame(vbT);(function st(n){var q=Math.min((n-t0)/450,1),e=1-Math.pow(1-q,3);setVB(f.map(function(x,i){return x+(t[i]-x)*e}));if(q<1)vbT=requestAnimationFrame(st)})(t0)}
+function resetMap(){animVB([0,0,700,470])}
+var GR=null,hid1={cn:0,eu:0,ru:0},drag=null,moved=0;
+var ARAL=[[58.6,46.3],[60.5,46.6],[61.6,45.9],[61,44.6],[59.9,44.3],[58.7,45.2]],BALK=[[73.4,46],[74.5,46.9],[76,46.6],[77.6,46.2],[79.1,46.4],[79,45.7],[77.5,45.6],[76,45.9],[74.4,45.6]],ISS=[[76.2,42.6],[77.2,42.65],[78.3,42.45],[77.3,42.3],[76.3,42.4]];
+var AMU=[[71,37.9],[68.9,37.2],[67.8,37.2],[66.5,37.35],[65.6,37.6],[64.4,38.9],[62.6,39.9],[61.3,41.2],[60.2,42.5],[59.8,43.9]],SYR=[[71.4,40.7],[69.5,40.2],[68.3,40.7],[66.8,41.2],[65.5,43.5],[64.7,44.5],[62.5,45.5],[61,46]];
+var NB=[['RUSSIA',62,55.6],['CHINA',85.2,43.4],['IRAN',57,35.7],['AFGHANISTAN',66.5,35.7],['MONGOLIA',86.5,52.6]];
+function rings(k){var v=GR&&GR.c&&GR.c[k]||GEO[k];return typeof v[0][0]==='number'?[v]:v}
+function zoomTo(c){var xs=[],ys=[];rings(c).forEach(function(r){r.forEach(function(p){var q=pj(p);xs.push(q[0]);ys.push(q[1])})});var x0=Math.min.apply(0,xs)-25,x1=Math.max.apply(0,xs)+25,y0=Math.min.apply(0,ys)-25,y1=Math.max.apply(0,ys)+25,w=x1-x0,h=y1-y0,r=700/470;if(w/h<r){var nw=h*r;x0-=(nw-w)/2;w=nw}else{var nh=w/r;y0-=(nh-h)/2;h=nh}animVB([x0,y0,w,h])}
+function zoomBy(f,e){var w=Math.min(1100,Math.max(120,vb[2]*f)),h=w*470/700,px=vb[0]+vb[2]/2,py=vb[1]+vb[3]/2;if(e){var r=$('map').getBoundingClientRect();px=vb[0]+(e.clientX-r.left)/r.width*vb[2];py=vb[1]+(e.clientY-r.top)/r.height*vb[3]}var nx=px-(px-vb[0])*(w/vb[2]),ny=py-(py-vb[1])*(h/vb[3]);if(e){if(vbT)cancelAnimationFrame(vbT);setVB([nx,ny,w,h])}else animVB([nx,ny,w,h])}
+function tip(e,k){var d=DATA(),c=d.C[k],t=$('tip'),w=$('map').parentNode.getBoundingClientRect();t.innerHTML='<b>'+c.f+' '+E(cn(k))+'</b><br>'+E(c.cap)+'<br>GDP $'+c.gdp+'B · +'+c.g+'%<br>'+c.pop+'M';t.style.display='block';t.style.left=Math.max(4,Math.min(e.clientX-w.left+12,w.width-170))+'px';t.style.top=(e.clientY-w.top+12)+'px'}
+function tipHide(){$('tip').style.display='none'}
+function mapClick(k){if(moved>4){moved=0;return}pick(k)}
+function bindMap(){var m=$('map');
+ m.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;drag={x:e.clientX,y:e.clientY,v:vb.slice()};moved=0});
+ window.addEventListener('pointermove',function(e){if(!drag)return;var r=m.getBoundingClientRect(),dx=e.clientX-drag.x,dy=e.clientY-drag.y;moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));if(moved>4){tipHide();if(vbT)cancelAnimationFrame(vbT);setVB([drag.v[0]-dx*drag.v[2]/r.width,drag.v[1]-dy*drag.v[3]/r.height,drag.v[2],drag.v[3]])}});
+ window.addEventListener('pointerup',function(){drag=null});
+ m.addEventListener('wheel',function(e){if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomBy(e.deltaY>0?1.15:.87,e)},{passive:false})}
+function drawMap(d){
+ var vals=K.map(function(k){return IN[mi][0](d.C[k])}),mn=Math.min.apply(0,vals),mx=Math.max.apply(0,vals),f=IN[mi][1];
+ $('aInd').innerHTML=IN.map(function(x,i){return '<button class="btn sm'+(i===mi?' on':'')+'" onclick="mi='+i+';render()">'+E(g(6,i))+'</button>'}).join('');
+ $('lgA').textContent=f(mn);$('lgB').textContent=f(mx);
+ var h='<polygon class="sea" points="'+pts(SEA)+'"/>';
+ if(GR&&GR.n)GR.n.forEach(function(n){n.r.forEach(function(r){h+='<polygon class="nb" points="'+pts(r)+'"/>'})});
+ [ARAL,BALK,ISS].forEach(function(a){h+='<polygon class="sea" points="'+pts(a)+'"/>'});
+ [AMU,SYR].forEach(function(a){h+='<polyline class="riv" points="'+pts(a)+'"/>'});
+ NB.forEach(function(n){var p=pj([n[1],n[2]]);h+='<text class="nbl" x="'+p[0]+'" y="'+p[1]+'">'+n[0]+'</text>'});
+ K.forEach(function(k,i){var t=mx===mn?.5:(vals[i]-mn)/(mx-mn);h+='<g class="cty'+(k===cur?' act':'')+'" style="fill:color-mix(in srgb,var(--ac) '+Math.round(18+t*72)+'%,var(--s1))" onclick="mapClick(\''+k+'\')">'+rings(k).map(function(r){return '<polygon points="'+pts(r)+'"/>'}).join('')+'</g>'});
+ K.forEach(function(k,i){var p=pj(LBL[k]);h+='<text x="'+p[0]+'" y="'+p[1]+'">'+E(cn(k).toUpperCase())+'</text><text class="v" x="'+p[0]+'" y="'+(p[1]+13)+'">'+f(vals[i])+'</text>'});
+ CITY.forEach(function(c){var p=pj([c[1],c[2]]);h+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(c[3]?3.5:2)+'" fill="'+(c[3]?'var(--ac2)':'var(--mu)')+'"/><text class="c" x="'+(p[0]+6)+'" y="'+(p[1]+3)+'">'+c[0]+'</text>'});
+ $('map').innerHTML=h}
+function setLang(l){lang=l;try{localStorage.setItem('cdlang',l)}catch(x){}render()}
+function pick(c){cur=c;render();zoomTo(c)}
+function openArt(k){var d=DATA(),a=d.A[k],x=a[cl()]||a.ru,i=AK.indexOf(k);$('mBody').innerHTML='<div class="eyebrow">'+E(g(13,i))+'</div><h3>'+E(x.t)+'</h3><p style="color:var(--mu)">'+E(x.l)+'</p><ul>'+x.b.map(function(b){return '<li>'+E(b)+'</li>'}).join('')+'</ul>'+x.p.map(function(p,i){return '<p'+(i?'':' class="dc"')+'>'+E(p)+'</p>'}).join('')+'<div class="note mono">'+E(a.au)+' · '+E(a.m)+'</div>';$('modal').classList.add('show')}
+function info(n){var r=cl()==='en',m=[[r?'<b>Central Diplomacy</b> is an open analytical portal on international relations, integration, water-energy security and geoeconomics of the five Central Asian states. CC BY 4.0.':'<b>Central Diplomacy</b> — открытый аналитический портал о международных отношениях, интеграции, водно-энергетической безопасности и геоэкономике пяти государств Центральной Азии. CC BY 4.0.'],[r?'Figures come from national statistics committees, IMF DOT, the World Bank and the TMTM secretariat. Items marked “Sample” are illustrative until official series are connected.':'Показатели берутся из бюллетеней нацстаткомитетов, IMF DOT, Всемирного банка и секретариата ТМТМ. Значения «Образец» иллюстративны до подключения официальных рядов.'],[(r?'Articles and corrections: ':'Статьи и поправки: ')+'<a href="mailto:beksultannurunbetov68@gmail.com" style="color:var(--ac)">beksultannurunbetov68@gmail.com</a>']];$('mBody').innerHTML='<h3>'+E(g(11,n))+'</h3><p>'+m[n][0]+'</p>';$('modal').classList.add('show')}
+function closeM(){$('modal').classList.remove('show')}
+function openSearch(){$('mBody').innerHTML='<input id="q" placeholder="'+E(g(9,1))+'" autocomplete="off"><div id="qr"></div>';$('modal').classList.add('show');$('q').oninput=function(){srch(this.value)};$('q').focus();srch('')}
+function srch(q){q=q.toLowerCase().trim();var d=DATA(),L=cl(),h=[];
+ K.forEach(function(k){if(!q||cn(k).toLowerCase().indexOf(q)>=0)h.push(['🌍 '+cn(k),"closeM();pick('"+k+"');location.hash='atlas'"])});
+ AK.forEach(function(k){var x=d.A[k][L]||d.A[k].ru;if(!q||(x.t+x.l).toLowerCase().indexOf(q)>=0)h.push(['📰 '+x.t,"openArt('"+k+"')"])});
+ d.TR.forEach(function(r){var v=r[L]||r.ru;if(q&&(v[0]+v[1]).toLowerCase().indexOf(q)>=0)h.push(['🗓 '+r.f+' · '+v[0],"closeM();location.hash='tracker'"])});
+ $('qr').innerHTML=h.slice(0,12).map(function(r){return '<div class="hit" onclick="'+r[1].replace(/"/g,'&quot;')+'">'+E(r[0])+'</div>'}).join('')||'<p class="note">'+E(g(9,4))+'</p>'}
+function csv(){var d=DATA(),r=['code,name,gdp_usd_b,growth_pct,population_m,trade_usd_b,inflation_pct,unemployment_pct'];K.forEach(function(k){var z=d.C[k];r.push([k,cn(k),z.gdp,z.g,z.pop,z.tr,z.inf,z.un].join(','))});var b=new Blob([r.join('\n')],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='central-asia-'+d.updated+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000);}
+$('themeBtn').onclick=function(){var r=document.documentElement,dk=css('--bg')==='#0a0e17';r.setAttribute('data-theme',dk?'light':'dark');setTimeout(render,30)};
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeM();if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch()}});
+render();bindMap();
+fetch('data/geo.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.c){GR=j;render()}}).catch(function(){});
+fetch('data/data.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j){B=j;render()}}).catch(function(){});
+</script>
+</body>
+</html>
